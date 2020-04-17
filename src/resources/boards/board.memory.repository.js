@@ -1,8 +1,8 @@
-const hardcodedUsersDatabase = [];
+const hardcodedBoardsDatabase = [];
 
 const getAll = async () => {
   // TODO: mock implementation. should be replaced during task development
-  return hardcodedUsersDatabase;
+  return hardcodedBoardsDatabase;
 };
 
 module.exports = { getAll };
