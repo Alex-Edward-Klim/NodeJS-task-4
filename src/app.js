@@ -23,17 +23,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((err, req, res, next) => {
-  if (err) {
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR));
-    logger.error(HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR));
-    return;
-  }
-  next();
-});
-
 process.on('uncaughtException', error => {
   logger.error(`captured error: ${error.message}`);
   const exit = process.exit;
@@ -57,5 +46,16 @@ app.use('/', (req, res, next) => {
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
+
+app.use((err, req, res, next) => {
+  if (err) {
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR));
+    logger.error(HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR));
+    return;
+  }
+  next();
+});
 
 module.exports = app;
