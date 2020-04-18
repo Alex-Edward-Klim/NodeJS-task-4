@@ -18,6 +18,18 @@ class Task {
     this.boardId = boardId;
     this.columnId = columnId;
   }
+
+  static toGet(task) {
+    const id = task._id;
+    const { title, order, description, userId, boardId, columnId } = task;
+    return { id, title, order, description, userId, boardId, columnId };
+  }
+
+  static toSend(task) {
+    const _id = task.id;
+    const { title, order, description, userId, boardId, columnId } = task;
+    return { _id, title, order, description, userId, boardId, columnId };
+  }
 }
 
 module.exports = Task;

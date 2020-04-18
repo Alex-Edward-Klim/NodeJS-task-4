@@ -17,6 +17,18 @@ class User {
     const { id, name, login } = user;
     return { id, name, login };
   }
+
+  static toGet(user) {
+    const id = user._id;
+    const { name, login } = user;
+    return { id, name, login };
+  }
+
+  static toSend(user) {
+    const _id = user.id;
+    const { name, login, password } = user;
+    return { _id, name, login, password };
+  }
 }
 
 module.exports = User;
