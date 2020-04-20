@@ -4,7 +4,7 @@ const path = require('path');
 const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
-const taskRouter = require('./resources/tasks/task.router');
+const taskRouter = require('./resources/tasks/task.router').router;
 const logger = require('./LOGS/logger');
 const HttpStatus = require('http-status-codes');
 

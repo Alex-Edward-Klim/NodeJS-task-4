@@ -1,37 +1,16 @@
 const router = require('express').Router();
 const User = require('./user.model');
-// const usersService = require('./user.service');
+const usersService = require('./user.service');
 
 // const tasksService = require('../tasks/task.service');
+const MongooseTask = require('../tasks/task.router').MongooseTask;
 
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
-const customSchema = new Schema(
-  {
-    _id: {
-      type: String
-    }
-  },
-  {
-    strict: false,
-    versionKey: false
-  }
-);
-
-const MongooseUser = mongoose.model('User', customSchema);
-
+// Temp
+const MongooseUser = require('./user.memory.repository').MongooseUser;
 // Get all users
 router.route('/').get(async (req, res) => {
-  MongooseUser.find()
-    .lean()
-    .exec()
-    .then(data => {
-      res.status(200).json(data.map(User.toGet));
-    })
-    .catch(err => {
-      res.status(500).json(err);
-    });
+  const users = await usersService.getAll();
+  res.status(200).json(users.map(User.toGet));
 });
 
 // Get a user by ID
@@ -99,32 +78,18 @@ router.route('/:userId').delete(async (req, res) => {
     if (!item) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json(User.toGet(item.toObject()));
+    MongooseTask.updateMany(
+      { userId: req.params.userId },
+      { userId: null },
+      error => {
+        if (err) {
+          res.json(error);
+        } else {
+          res.json(User.toGet(item.toObject()));
+        }
+      }
+    );
   });
-
-  // TASKS!!!
 });
-
-// router.route('/:userId').delete(async (req, res) => {
-//   const users = await usersService.getAll();
-//   const userIndex = users.findIndex(elem => elem.id === req.params.userId);
-
-//   if (userIndex === -1) {
-//     res
-//       .status(404)
-//       .send(`The user with the ID: ${req.params.userId} was NOT found`);
-//   } else {
-//     const user = users.splice(userIndex, 1)[0];
-
-//     const tasks = await tasksService.getAll();
-//     tasks.map(elem => {
-//       if (elem.userId === user.id) {
-//         elem.userId = null;
-//       }
-//     });
-
-//     res.json(User.toResponse(user));
-//   }
-// });
 
 module.exports = router;
